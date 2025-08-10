@@ -8,27 +8,17 @@ import (
 	"github.com/rivo/tview"
 
 
-	"image/png"
+
+	"main/File-Eater"
 	// "github.com/gdamore/tcell/v2"
-	"os"
+	// "os"
 )
 
 
 func main() {
 var app *tview.Application = tview.NewApplication()
 	var wm *winman.Manager= winman.NewWindowManager()
-	file, err := os.Open("Health.png")
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	img, err := png.Decode(file)
-	if err != nil {
-		panic(err)
-	}
-
 	
-
 	var createForm = func(modal bool) *winman.WindowBase {
 
 		var form *tview.Form= tview.NewForm()
@@ -37,22 +27,26 @@ var app *tview.Application = tview.NewApplication()
 		
 		var window *winman.WindowBase= winman.NewWindow().
 			SetRoot(All).
-			SetResizable(false).
+			SetResizable(true).
 			SetDraggable(true).
 			SetModal(modal)
 
 		
 		
 		var display *tview.TextView = tview.NewTextView().
-		SetText("Output Here:").
-		SetTextAlign(tview.AlignLeft)
-		
-			All.AddItem(form.AddInputField("Enter Here", "", 40, nil, nil).
-			AddImage("test",img,,10,16777216).
-			AddInputField("Enter ROT (Caesar)", "", 40, nil, nil).
+		SetText("").
+		SetTextAlign(tview.AlignCenter).
+		SetDynamicColors(true)
+		var Points *tview.TextView = tview.NewTextView().
+		SetText("Points").
+		SetTextAlign(tview.AlignLeft).SetSize(2,2)
+
+			All.AddItem(form.AddInputField("Enter The FilePath", "", 40, nil, nil).
 			AddFormItem(display).
-			AddButton("T 2 H", func() {
-			Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
+			AddFormItem(Points).
+			AddButton("Feed The File", func() {
+				display.SetText(fmt.Sprintln(Eater.FileEater(form.GetFormItem(0).(*tview.InputField).GetText()), form.GetFormItem(0).(*tview.InputField).GetText()))
+				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
 			}).
 			AddButton("T 2 B", func() {
 				Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
@@ -63,38 +57,16 @@ var app *tview.Application = tview.NewApplication()
 			AddButton("T 2 B32", func() {
 				Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
 			}), 0,0,5,4,0,0,false)
-
-		
 		
 
-
-			
-			
-
-		var title string= fmt.Sprintln("Crypto-Hacks")
+		var title string= fmt.Sprintln("Little Noro:" + Eater.Levels())
 		window.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
-		window.SetRect(2, 2, 50, 30)
-		window.AddButton(&winman.Button{
-			Symbol:    'X',
-			Alignment: winman.ButtonLeft,
+		// window.SetRect(2, 2, 50, 30)
 
-		})
 
-		var maxMinButton *winman.Button
-		maxMinButton = &winman.Button{
-			Symbol:    '▴',
-			Alignment: winman.ButtonRight,
-			OnClick: func() {
-				if window.IsMaximized() {
-					window.Restore()
-					maxMinButton.Symbol = '▴'
-				} else {
-					window.Maximize()
-					maxMinButton.Symbol = '▾'
-				}
-			},
-		}
-		window.AddButton(maxMinButton)
+		
+
+
 		
 		wm.AddWindow(window)
 		return window
