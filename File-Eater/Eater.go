@@ -142,33 +142,47 @@ func Levels()string{
 }
 
 func levelsound(){
-	var progress Progress
+		var progress Progress
 	data2, err := os.Open("progress.json")
-	if err != nil {}
+	 if err != nil {
+		// return err.Error()
+	   }
 	defer data2.Close()
 	err = json.NewDecoder(data2).Decode(&progress)
-	if err != nil {}
-	points := progress.Points
+ if err != nil {
+		// return err.Error()
+	   }
+	   points := progress.Points
 	if points < 20{
 		
 	}else if points == 20 {
 		Sounds.Sound("Level.mp3")
+		progress.Food += 100
+		
 	
 	}else if points == 40{
 		Sounds.Sound("Level.mp3")
+		
+		progress.Water += 100
 	
 	} else if points == 60 {
 		Sounds.Sound("Level.mp3")
+		progress.Food += 100
+		
 	
 	}else if points == 130{
 		Sounds.Sound("Level.mp3")
+		
+		progress.Water += 100
 	} else if points > 9999 {
 		Sounds.Sound("Level.mp3")
 		Sounds.Sound("Level.mp3")
 		Sounds.Sound("Level.mp3")
+		
+		
 	}
-}
 
+}
 
 	func FeedSpammer()int{
 	var progress Progress
@@ -181,6 +195,7 @@ func levelsound(){
  if err != nil {
 		// return err.Error()
 	   }
+	   if progress.Food > 0  {
 	   progress.Food = progress.Food - 1
 	   progress.Count = progress.Count + 1
 	   
@@ -204,7 +219,8 @@ func levelsound(){
 	   
 return progress.Count
 		
-
+	}
+	return 0
 	}
 	
 		func DrinkSpammer()int{
@@ -218,6 +234,7 @@ return progress.Count
  if err != nil {
 		// return err.Error()
 	   }
+	   if progress.Water > 0 {
 	   progress.Water = progress.Water - 1
 	   progress.Count = progress.Count + 1
 	   
@@ -240,7 +257,8 @@ return progress.Count
 	   }
 	   
 return progress.Count
-		
+	}
+	return 0
 
 	}
 	
