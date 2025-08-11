@@ -50,12 +50,12 @@ var app *tview.Application = tview.NewApplication()
 		SetText(fmt.Sprintf("Water: %d", Eater.CurrWater())).
 		SetTextAlign(tview.AlignLeft).SetSize(10,10)
 
-			All.AddItem(form.AddInputField("Enter The FilePath", "", 40, nil, nil), 0,0,2,5	,1,1,false).
+			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 0,0,2,5	,1,1,false).
 			AddItem(form2.AddFormItem(Images.Images()), 3, 2, 2, 4, 1, 1, false).
 			AddItem(form3.AddFormItem(Points), 10, 0, 1, 1, 0, 1, false).
 			AddItem(form6.AddFormItem(Food), 2, 0, 1, 1, 0, 1, false).
 			AddItem(form7.AddFormItem(Water), 6, 0, 1, 1, 0, 1, false).
-			AddItem(form4.AddButton("Feed The File", func(){
+			AddItem(form4.AddButton("Feed With File", func(){
 				Eater.FileEater(form.GetFormItem(0).(*tview.InputField).GetText())
 				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
 			}).AddButton("FeedSpam", func() {
@@ -74,11 +74,7 @@ var app *tview.Application = tview.NewApplication()
 		var title string= fmt.Sprintln("Little Noro:" + Eater.Levels())
 		window.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
 		window.SetRect(2, 2, 70, 45)
-
-
-		
-
-		
+				 
 		wm.AddWindow(window)
 		return window
 	}
@@ -92,8 +88,3 @@ var app *tview.Application = tview.NewApplication()
 	}
 	
 }
-
-	
-
-
-
