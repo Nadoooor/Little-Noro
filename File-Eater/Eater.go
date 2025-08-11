@@ -24,9 +24,8 @@ func FileEater(File string) string{
 		return err.Error()
 	   }
 	err = os.Remove(File)
-
-	if err != nil {
-		return "not found"
+	if err!= nil {
+		return err.Error()
 	}else if progress.Points >= 60 {
 	Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
 	

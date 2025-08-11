@@ -28,6 +28,7 @@ var app *tview.Application = tview.NewApplication()
 		var form5 *tview.Form= tview.NewForm()
 		var form6 *tview.Form= tview.NewForm()
 		var form7 *tview.Form= tview.NewForm()
+		var form8 *tview.Form= tview.NewForm()
 		var All *tview.Grid= tview.NewGrid().
 		SetSize(11,5,0,0)
 		
@@ -38,7 +39,10 @@ var app *tview.Application = tview.NewApplication()
 			SetModal(modal)
 
 		var log *tview.TextView = tview.NewTextView().
-		SetTextAlign(tview.AlignLeft).SetSize(10, 10)
+		SetTextAlign(tview.AlignLeft).SetSize(10, 50)
+		var ex *tview.TextView = tview.NewTextView().
+		SetTextAlign(tview.AlignLeft).SetSize(10, 50).
+		SetText(fmt.Sprintln("(Linux: /home/Username/Thepath) (Windows: D:/thepath)"))
 
 		var Points *tview.TextView = tview.NewTextView().
 		SetText(fmt.Sprintf("Points: %d", Eater.Currpoints())).
@@ -50,26 +54,28 @@ var app *tview.Application = tview.NewApplication()
 		SetText(fmt.Sprintf("Water: %d", Eater.CurrWater())).
 		SetTextAlign(tview.AlignLeft).SetSize(10,10)
 
-			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 0,0,2,5	,1,1,false).
+			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 0,0,1,5,1,1,false).
+			AddItem(form8.AddFormItem(ex), 1,0,1,5,1,1,false).
 			AddItem(form2.AddFormItem(Images.Images()), 3, 2, 2, 4, 1, 1, false).
 			AddItem(form3.AddFormItem(Points), 10, 0, 1, 1, 0, 1, false).
 			AddItem(form6.AddFormItem(Food), 2, 0, 1, 1, 0, 1, false).
 			AddItem(form7.AddFormItem(Water), 6, 0, 1, 1, 0, 1, false).
 			AddItem(form4.AddButton("Feed With File", func(){
-				Eater.FileEater(form.GetFormItem(0).(*tview.InputField).GetText())
+				
+				log.SetText(Eater.FileEater(form.GetFormItem(0).(*tview.InputField).GetText()))
 				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
-			}).AddButton("FeedSpam", func() {
+			}).AddButton("SpamToFeed", func() {
 				Eater.FeedSpammer()
 				log.SetText(fmt.Sprintf("count %d", Eater.FeedSpammer()))
 				Food.SetText(fmt.Sprintf("Food: %d", Eater.CurrFood()))
 				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
-			}).AddButton("DrinkSpam", func() {
+			}).AddButton("SpamToDrink", func() {
 				Eater.DrinkSpammer()
 				log.SetText(fmt.Sprintf("count %d", Eater.DrinkSpammer()))
 				Water.SetText(fmt.Sprintf("Water: %d", Eater.CurrWater()))
 				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
-			}), 10, 1, 1, 4, 1, 1, false).
-			AddItem(form5.AddFormItem(log), 11, 0, 2, 1, 0, 1, false)
+			}), 10, 1, 1, 5, 1, 1, false).
+			AddItem(form5.AddFormItem(log), 11, 0, 2, 5, 0, 1, false)
 
 		var title string= fmt.Sprintln("Little Noro:" + Eater.Levels())
 		window.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
