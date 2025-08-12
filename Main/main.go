@@ -28,7 +28,7 @@ var app *tview.Application = tview.NewApplication()
 		var form5 *tview.Form= tview.NewForm()
 		var form6 *tview.Form= tview.NewForm()
 		var form7 *tview.Form= tview.NewForm()
-		var form8 *tview.Form= tview.NewForm()
+		// var form8 *tview.Form= tview.NewForm()
 		var All *tview.Grid= tview.NewGrid().
 		SetSize(11,5,0,0)
 		
@@ -40,9 +40,9 @@ var app *tview.Application = tview.NewApplication()
 
 		var log *tview.TextView = tview.NewTextView().
 		SetTextAlign(tview.AlignLeft).SetSize(10, 50)
-		var ex *tview.TextView = tview.NewTextView().
-		SetTextAlign(tview.AlignLeft).SetSize(10, 50).
-		SetText(fmt.Sprintln("(Linux: /home/Username/Thepath) (Windows: D:/thepath)"))
+		// var ex *tview.TextView = tview.NewTextView().
+		// SetTextAlign(tview.AlignLeft).SetSize(10, 50).
+		// SetText(fmt.Sprintln("(Linux: /home/Username/Thepath) (Windows: D:/thepath)"))
 
 		var Points *tview.TextView = tview.NewTextView().
 		SetText(fmt.Sprintf("Points: %d", Eater.Currpoints())).
@@ -54,8 +54,8 @@ var app *tview.Application = tview.NewApplication()
 		SetText(fmt.Sprintf("Water: %d", Eater.CurrWater())).
 		SetTextAlign(tview.AlignLeft).SetSize(10,10)
 
-			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 0,0,1,5,1,1,false).
-			AddItem(form8.AddFormItem(ex), 1,0,1,5,1,1,false).
+			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 1,0,1,5,1,1,false).
+			// AddItem(form8.AddFormItem(ex), 1,0,1,5,1,1,false).
 			AddItem(form2.AddFormItem(Images.Images()), 3, 2, 2, 4, 1, 1, false).
 			AddItem(form3.AddFormItem(Points), 10, 0, 1, 1, 0, 1, false).
 			AddItem(form6.AddFormItem(Food), 2, 0, 1, 1, 0, 1, false).
