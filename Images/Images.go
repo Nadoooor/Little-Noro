@@ -59,7 +59,7 @@ func Images() *tview.Image {
 		SetImage(img).SetSize(15,30).SetAlign(tview.AlignLeft, tview.AlignLeft)
 		return Image
 	} else if points >= 60 && points < 130 {
-		file, err := os.Open("Noronuiem.png")
+		file, err := os.Open("Noronium.png")
 	if err != nil {}
 	
 	defer file.Close()
@@ -70,7 +70,7 @@ func Images() *tview.Image {
 	Image := tview.NewImage().
 		SetImage(img).SetSize(15,30).SetAlign(tview.AlignLeft, tview.AlignLeft)
 		return Image
-	}else if points > 9999 {
+	}else if points >= 9999 {
 		file, err := os.Open("Cheater.png")
 	if err != nil {}
 	
