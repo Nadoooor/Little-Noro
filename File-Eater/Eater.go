@@ -282,24 +282,26 @@ func levelsound(){
 	   if progress.Food > 0 {
 		progress.Count = progress.Count + 1
 	  			if progress.Hunger >= 50 && progress.Count >= 10{
+					levelsound()
+					progress.Count = 0
 				progress.Hunger = progress.Hunger + 5
 				if progress.Hunger > 100{
 					progress.Hunger = 100
 				}
+				progress.Points++
+				Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
 	   progress.Food = progress.Food - 1
 	   
 			} else if progress.Hunger < 50 && progress.Count >= 10{
+				levelsound()
+				progress.Count = 0
 				progress.Hunger = progress.Hunger + 8
 				progress.Food = progress.Food - 1
+				Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
 				
 			}
 	   
-	   if progress.Count >= 10 {
-		levelsound()
-		progress.Count = 0
-		progress.Points++
-		Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
-	   }
+
 	   
 
 	data2, err = os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE, 0644)
@@ -343,24 +345,25 @@ return progress.Count
 	   if progress.Water > 0 {
 		progress.Count = progress.Count + 1
 	  			if progress.Hunger >= 50 && progress.Count >= 10{
+							levelsound()
+		progress.Count = 0
+		progress.Points++
 				progress.Hunger = progress.Hunger + 5
 				if progress.Hunger > 100{
 					progress.Hunger = 100
 				}
 	   progress.Water = progress.Water - 1
+	   Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
 	   
 			} else if progress.Hunger < 50 && progress.Count >= 10{
+						levelsound()
+		progress.Count = 0
 				progress.Hunger = progress.Hunger + 8
 				progress.Water = progress.Water - 1
+				Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
 				
 			}
-	   
-	   if progress.Count >= 10 {
-		levelsound()
-		progress.Count = 0
-		progress.Points++
-		Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
-	   }
+
 	   
 
 	data2, err = os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE, 0644)
