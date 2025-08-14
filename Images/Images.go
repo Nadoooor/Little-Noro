@@ -58,7 +58,7 @@ func Images() *tview.Image {
 	Image := tview.NewImage().
 		SetImage(img).SetSize(15,30).SetAlign(tview.AlignLeft, tview.AlignLeft)
 		return Image
-	} else if points >= 60 && points < 130 {
+	} else if points >= 60 && points < 9998 {
 		file, err := os.Open("Noronium.png")
 	if err != nil {}
 	

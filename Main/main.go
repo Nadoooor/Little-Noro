@@ -3,19 +3,35 @@ package main
 import (
 	"fmt"
 	"main/Images"
-
+	// "os"
 	"github.com/epiclabs-io/winman"
 	"github.com/rivo/tview"
-
-
-
+	"time"
 	"main/File-Eater"
+	// "encoding/json"
 	// "github.com/gdamore/tcell/v2"
 	// "os"
 )
 
+func updatetime(Time *tview.TextView, app *tview.Application,Hunger *tview.TextView,Water *tview.TextView,Points *tview.TextView){
+for {
+            app.QueueUpdateDraw(func() {
+                Time.SetText(fmt.Sprintln("Time: " + Eater.Currenttime()))
+				
+				Hunger.SetText(fmt.Sprintf("Hunger: %d", Eater.Currhunger()))
+				Water.SetText(fmt.Sprintf("Water: %d", Eater.CurrWater()))
+				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
+            })
+            time.Sleep(1 * time.Second) // update every second
+        }
+}
+
+
 
 func main() {
+
+
+
 var app *tview.Application = tview.NewApplication()
 	var wm *winman.Manager= winman.NewWindowManager()
 	
@@ -28,7 +44,9 @@ var app *tview.Application = tview.NewApplication()
 		var form5 *tview.Form= tview.NewForm()
 		var form6 *tview.Form= tview.NewForm()
 		var form7 *tview.Form= tview.NewForm()
-		// var form8 *tview.Form= tview.NewForm()
+		var form8 *tview.Form= tview.NewForm()
+		var form9 *tview.Form= tview.NewForm()
+		var form10 *tview.Form= tview.NewForm()
 		var All *tview.Grid= tview.NewGrid().
 		SetSize(11,5,0,0)
 		
@@ -46,37 +64,53 @@ var app *tview.Application = tview.NewApplication()
 
 		var Points *tview.TextView = tview.NewTextView().
 		SetText(fmt.Sprintf("Points: %d", Eater.Currpoints())).
-		SetTextAlign(tview.AlignLeft).SetSize(10,10)
+		SetTextAlign(tview.AlignLeft).SetSize(5,10)
 		var Food *tview.TextView = tview.NewTextView().
 		SetText(fmt.Sprintf("Food: %d", Eater.CurrFood())).
-		SetTextAlign(tview.AlignLeft).SetSize(10,10)
+		SetTextAlign(tview.AlignLeft).SetSize(5,10)
 		var Water *tview.TextView = tview.NewTextView().
 		SetText(fmt.Sprintf("Water: %d", Eater.CurrWater())).
-		SetTextAlign(tview.AlignLeft).SetSize(10,10)
+		SetTextAlign(tview.AlignLeft).SetSize(5,10)
+		var Hunger *tview.TextView = tview.NewTextView().
+		SetText(fmt.Sprintf("Hunger: %d", Eater.Currhunger())).
+		SetTextAlign(tview.AlignLeft).SetSize(5,10)
+		var Time *tview.TextView = tview.NewTextView().
+		SetText(fmt.Sprintln("Time: " )).
+		SetTextAlign(tview.AlignLeft).SetSize(5,10)
+		var State *tview.TextView = tview.NewTextView().
+		SetText(fmt.Sprintln("State: " + Eater.Daynight())).
+		SetTextAlign(tview.AlignLeft).SetSize(3,50)
 
 			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 1,0,1,5,1,1,false).
 			// AddItem(form8.AddFormItem(ex), 1,0,1,5,1,1,false).
 			AddItem(form2.AddFormItem(Images.Images()), 3, 2, 2, 4, 1, 1, false).
 			AddItem(form3.AddFormItem(Points), 10, 0, 1, 1, 0, 1, false).
-			AddItem(form6.AddFormItem(Food), 2, 0, 1, 1, 0, 1, false).
+			AddItem(form6.AddFormItem(Food), 4, 0, 1, 1, 0, 1, false).
 			AddItem(form7.AddFormItem(Water), 6, 0, 1, 1, 0, 1, false).
+			AddItem(form8.AddFormItem(Hunger), 2, 0, 1, 1, 0, 1, false).
+			AddItem(form9.AddFormItem(Time), 2, 1, 1, 1, 0, 1, false).
+			AddItem(form10.AddFormItem(State), 9,0, 1, 5, 0, 1, false).
+
 			AddItem(form4.AddButton("Feed With File", func(){
 				
 				log.SetText(Eater.FileEater(form.GetFormItem(0).(*tview.InputField).GetText()))
+				Hunger.SetText(fmt.Sprintf("Hunger: %d", Eater.Currhunger()))
 				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
+				// Time.SetText(fmt.Sprintln("Time: " + Eater.Currenttime()))
 			}).AddButton("SpamToFeed", func() {
 				Eater.FeedSpammer()
+
 				log.SetText(fmt.Sprintf("count %d", Eater.FeedSpammer()))
-				Food.SetText(fmt.Sprintf("Food: %d", Eater.CurrFood()))
-				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
+
 			}).AddButton("SpamToDrink", func() {
 				Eater.DrinkSpammer()
-				log.SetText(fmt.Sprintf("count %d", Eater.DrinkSpammer()))
-				Water.SetText(fmt.Sprintf("Water: %d", Eater.CurrWater()))
-				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
+
+				// Time.SetText(fmt.Sprintln("Time: " + Eater.Currenttime()))
+log.SetText(fmt.Sprintf("count %d", Eater.DrinkSpammer()))
 			}), 10, 1, 1, 5, 1, 1, false).
 			AddItem(form5.AddFormItem(log), 11, 0, 2, 5, 0, 1, false)
 
+			go updatetime(Time, app, Hunger, Water, Points)
 		var title string= fmt.Sprintln("Little Noro:" + Eater.Levels())
 		window.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
 		window.SetRect(2, 2, 70, 45)
