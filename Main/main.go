@@ -1,96 +1,86 @@
 package main
 
 import (
-	"fmt"
+	"image/color"
 	"main/Images"
+	"strings"
+	"time"
 
-	"github.com/epiclabs-io/winman"
-	"github.com/rivo/tview"
-
-
-
-	"main/File-Eater"
-	// "github.com/gdamore/tcell/v2"
-	// "os"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
 )
 
-
 func main() {
-var app *tview.Application = tview.NewApplication()
-	var wm *winman.Manager= winman.NewWindowManager()
-	
-	var createForm = func(modal bool) *winman.WindowBase {
+	var bg *canvas.Image
+	myApp := app.New()
+	myWindow := myApp.NewWindow("Little-Noro")
+	timen := time.Now().Format("3:04 PM")
 
-		var form *tview.Form= tview.NewForm()
-		var form2 *tview.Form= tview.NewForm()
-		var form3 *tview.Form= tview.NewForm()
-		var form4 *tview.Form= tview.NewForm()
-		var form5 *tview.Form= tview.NewForm()
-		var form6 *tview.Form= tview.NewForm()
-		var form7 *tview.Form= tview.NewForm()
-		// var form8 *tview.Form= tview.NewForm()
-		var All *tview.Grid= tview.NewGrid().
-		SetSize(11,5,0,0)
-		
-		var window *winman.WindowBase= winman.NewWindow().
-			SetRoot(All).
-			SetResizable(false).
-			SetDraggable(true).
-			SetModal(modal)
-
-		var log *tview.TextView = tview.NewTextView().
-		SetTextAlign(tview.AlignLeft).SetSize(10, 50)
-		// var ex *tview.TextView = tview.NewTextView().
-		// SetTextAlign(tview.AlignLeft).SetSize(10, 50).
-		// SetText(fmt.Sprintln("(Linux: /home/Username/Thepath) (Windows: D:/thepath)"))
-
-		var Points *tview.TextView = tview.NewTextView().
-		SetText(fmt.Sprintf("Points: %d", Eater.Currpoints())).
-		SetTextAlign(tview.AlignLeft).SetSize(10,10)
-		var Food *tview.TextView = tview.NewTextView().
-		SetText(fmt.Sprintf("Food: %d", Eater.CurrFood())).
-		SetTextAlign(tview.AlignLeft).SetSize(10,10)
-		var Water *tview.TextView = tview.NewTextView().
-		SetText(fmt.Sprintf("Water: %d", Eater.CurrWater())).
-		SetTextAlign(tview.AlignLeft).SetSize(10,10)
-
-			All.AddItem(form.AddInputField("Enter The FullFilePath", "", 40, nil, nil), 1,0,1,5,1,1,false).
-			// AddItem(form8.AddFormItem(ex), 1,0,1,5,1,1,false).
-			AddItem(form2.AddFormItem(Images.Images()), 3, 2, 2, 4, 1, 1, false).
-			AddItem(form3.AddFormItem(Points), 10, 0, 1, 1, 0, 1, false).
-			AddItem(form6.AddFormItem(Food), 2, 0, 1, 1, 0, 1, false).
-			AddItem(form7.AddFormItem(Water), 6, 0, 1, 1, 0, 1, false).
-			AddItem(form4.AddButton("Feed With File", func(){
-				
-				log.SetText(Eater.FileEater(form.GetFormItem(0).(*tview.InputField).GetText()))
-				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
-			}).AddButton("SpamToFeed", func() {
-				Eater.FeedSpammer()
-				log.SetText(fmt.Sprintf("count %d", Eater.FeedSpammer()))
-				Food.SetText(fmt.Sprintf("Food: %d", Eater.CurrFood()))
-				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
-			}).AddButton("SpamToDrink", func() {
-				Eater.DrinkSpammer()
-				log.SetText(fmt.Sprintf("count %d", Eater.DrinkSpammer()))
-				Water.SetText(fmt.Sprintf("Water: %d", Eater.CurrWater()))
-				Points.SetText(fmt.Sprintf("Points: %d", Eater.Currpoints()))
-			}), 10, 1, 1, 5, 1, 1, false).
-			AddItem(form5.AddFormItem(log), 11, 0, 2, 5, 0, 1, false)
-
-		var title string= fmt.Sprintln("Little Noro:" + Eater.Levels())
-		window.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
-		window.SetRect(2, 2, 70, 45)
-				 
-		wm.AddWindow(window)
-		return window
+	if strings.Contains(timen, "PM") {
+		bg = canvas.NewImageFromFile("Back.png")
+		bg.FillMode = canvas.ImageFillStretch
+	} else {
+		bg = canvas.NewImageFromFile("Backnight.png")
+		bg.FillMode = canvas.ImageFillStretch
 	}
 
-	for i := 0; i < 1; i++ {
-		createForm(false).Show()
-	}
+	bottle, _ := fyne.LoadResourceFromPath("bottle.png")
+	food, _ := fyne.LoadResourceFromPath("Foodk.png")
+	plate := canvas.NewImageFromFile("plate.png")
+	pet := canvas.NewImageFromImage(Images.Images())
+	points := widget.NewLabel("points")
+	points.SetText("Points:")
+	foodtxt := widget.NewLabel("Food")
+	foodtxt.SetText("Food:")
+	water := widget.NewLabel("Water")
+	water.SetText("Water:")
+	timet := widget.NewLabel("Time")
 
-	if err := app.SetRoot(wm, true).EnableMouse(true).Run(); err != nil {
-		panic(err)
-	}
-	
+	go func() {
+		ticker := time.NewTicker(1 * time.Second)
+		for range ticker.C {
+			fyne.Do(func() {
+				timet.SetText("time: " + timen)
+				timet.Refresh()
+			})
+		}
+	}()
+
+	black := canvas.NewRectangle(color.Black)
+
+	button2 := widget.NewButtonWithIcon("fuck", food, func() {
+
+	})
+
+	button := widget.NewButtonWithIcon("spam", bottle, func() {
+	})
+
+	button2.Resize(fyne.NewSize(100, 35))
+	button2.Move(fyne.NewPos(265, 475))
+	pet.Resize(fyne.NewSize(300, 300))
+	pet.Move(fyne.NewPos(50, 100))
+	button.Resize(fyne.NewSize(100, 35))
+	button.Move(fyne.NewPos(25, 475))
+	plate.Resize(fyne.NewSize(200, 200))
+	plate.Move(fyne.NewPos(95, 400))
+	points.Resize(fyne.NewSize(100, 35))
+	points.Move(fyne.NewPos(300, 0))
+	foodtxt.Resize(fyne.NewSize(100, 35))
+	foodtxt.Move(fyne.NewPos(100, 0))
+	water.Resize(fyne.NewSize(100, 35))
+	water.Move(fyne.NewPos(200, 0))
+	timet.Resize(fyne.NewSize(100, 35))
+	timet.Move(fyne.NewPos(0, 0))
+	bg.Resize(fyne.NewSize(400, 600))
+	black.Resize(fyne.NewSize(400, 35))
+	black.Move(fyne.NewPos(0, 0))
+
+	container1 := container.NewWithoutLayout(bg, button, button2, plate, pet, black, water, points, foodtxt, timet)
+	myWindow.SetContent(container1)
+	myWindow.Resize(fyne.NewSize(400, 600))
+	myWindow.SetFixedSize(true)
+	myWindow.ShowAndRun()
 }
