@@ -2,7 +2,11 @@ package main
 
 import (
 	"image/color"
+	"log"
+	Eater "main/File-Eater"
 	"main/Images"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -13,59 +17,99 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+func checkMemoryLimit(maxMB uint64) bool {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	usedMB := m.Alloc / 1024 / 1024
+	return usedMB < maxMB
+}
+
 func main() {
+
 	var bg *canvas.Image
-	myApp := app.New()
-	myWindow := myApp.NewWindow("Little-Noro")
-	timen := time.Now().Format("3:04 PM")
+	var myApp fyne.App = app.New()
+	var myWindow fyne.Window = myApp.NewWindow("Little-Noro")
+	var timen string = time.Now().Format("3:04 PM")
+	rebgnight, _ := fyne.LoadResourceFromPath("Backnight.png")
+	rebg, _ := fyne.LoadResourceFromPath("Back.png")
+	pla, _ := fyne.LoadResourceFromPath("plate.png")
 
 	if strings.Contains(timen, "PM") {
-		bg = canvas.NewImageFromFile("Back.png")
-		bg.FillMode = canvas.ImageFillStretch
+		bg = canvas.NewImageFromResource(rebg)
 	} else {
-		bg = canvas.NewImageFromFile("Backnight.png")
-		bg.FillMode = canvas.ImageFillStretch
+		bg = canvas.NewImageFromResource(rebgnight)
 	}
 
 	bottle, _ := fyne.LoadResourceFromPath("bottle.png")
+
 	food, _ := fyne.LoadResourceFromPath("Foodk.png")
-	plate := canvas.NewImageFromFile("plate.png")
-	pet := canvas.NewImageFromImage(Images.Images())
-	points := widget.NewLabel("points")
+
+	var plate *canvas.Image = canvas.NewImageFromResource(pla)
+	var pet *canvas.Image = canvas.NewImageFromResource(Images.Images())
+	var points *widget.Label = widget.NewLabel("points")
 	points.SetText("Points:")
-	foodtxt := widget.NewLabel("Food")
+	var foodtxt *widget.Label = widget.NewLabel("Food")
 	foodtxt.SetText("Food:")
-	water := widget.NewLabel("Water")
+	var water *widget.Label = widget.NewLabel("Water")
 	water.SetText("Water:")
-	timet := widget.NewLabel("Time")
+	var timet *widget.Label = widget.NewLabel("Time")
 
 	go func() {
-		ticker := time.NewTicker(1 * time.Second)
-		for range ticker.C {
-			fyne.Do(func() {
-				timet.SetText("time: " + timen)
-				timet.Refresh()
-			})
+		var ticker *time.Ticker = time.NewTicker(1 * time.Second)
+		var lastpet fyne.Resource
+		lastpet = pet.Resource
+		if checkMemoryLimit(75) {
+			for range ticker.C {
+				fyne.Do(func() {
+					var timen string = time.Now().Format("3:04 PM")
+					newpet := Images.Images()
+					if lastpet != newpet {
+						pet.Resource = Images.Images()
+						pet.Refresh()
+						lastpet = pet.Resource
+					}
+					if timet.Text != timen {
+						timet.SetText("time: " + timen)
+						timet.Refresh()
+					}
+					progress := Eater.Loadcache()
+					if points.Text != ("Points: " + strconv.Itoa(progress.Points)) {
+						points.SetText("Points: " + strconv.Itoa(Eater.Currpoints()))
+					}
+
+					if foodtxt.Text != ("Food: " + strconv.Itoa(progress.Food)) {
+						foodtxt.SetText("Food: " + strconv.Itoa(Eater.CurrFood()))
+					}
+					if water.Text != ("Water: " + strconv.Itoa(progress.Water)) {
+						water.SetText("Water: " + strconv.Itoa(Eater.CurrWater()))
+					}
+
+				})
+			}
+		} else {
+			log.Println("Memory limit reached—skipping update")
 		}
+
 	}()
 
-	black := canvas.NewRectangle(color.Black)
+	var black *canvas.Rectangle = canvas.NewRectangle(color.Black)
 
-	button2 := widget.NewButtonWithIcon("fuck", food, func() {
-
+	var button2 *widget.Button = widget.NewButtonWithIcon("spam", food, func() {
+		Eater.FeedSpammer()
 	})
 
-	button := widget.NewButtonWithIcon("spam", bottle, func() {
+	var button *widget.Button = widget.NewButtonWithIcon("spam", bottle, func() {
+		Eater.DrinkSpammer()
 	})
 
 	button2.Resize(fyne.NewSize(100, 35))
-	button2.Move(fyne.NewPos(265, 475))
+	button2.Move(fyne.NewPos(265, 465))
 	pet.Resize(fyne.NewSize(300, 300))
 	pet.Move(fyne.NewPos(50, 100))
 	button.Resize(fyne.NewSize(100, 35))
-	button.Move(fyne.NewPos(25, 475))
+	button.Move(fyne.NewPos(25, 465))
 	plate.Resize(fyne.NewSize(200, 200))
-	plate.Move(fyne.NewPos(95, 400))
+	plate.Move(fyne.NewPos(95, 390))
 	points.Resize(fyne.NewSize(100, 35))
 	points.Move(fyne.NewPos(300, 0))
 	foodtxt.Resize(fyne.NewSize(100, 35))
@@ -78,8 +122,15 @@ func main() {
 	black.Resize(fyne.NewSize(400, 35))
 	black.Move(fyne.NewPos(0, 0))
 
-	container1 := container.NewWithoutLayout(bg, button, button2, plate, pet, black, water, points, foodtxt, timet)
+	var container1 *fyne.Container = container.NewWithoutLayout(bg, button, button2, plate, pet, black, water, points, foodtxt, timet)
 	myWindow.SetContent(container1)
+
+	myWindow.SetOnDropped(func(pos fyne.Position, uris []fyne.URI) {
+		for _, uri := range uris {
+			Eater.FileEater(uri.Path())
+		}
+	})
+
 	myWindow.Resize(fyne.NewSize(400, 600))
 	myWindow.SetFixedSize(true)
 	myWindow.ShowAndRun()

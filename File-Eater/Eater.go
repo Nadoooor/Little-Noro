@@ -1,263 +1,139 @@
 package Eater
 
-import(
+import (
 	"os"
 	// "log"
 	"encoding/json"
 	"main/Sounds"
-
 )
+
 type Progress struct {
 	Points int `json:"points"`
 	Count  int `json:"count"`
-	Food int `json:"food"`
-	Water int `json:"water"`
+	Food   int `json:"food"`
+	Water  int `json:"water"`
 }
 
-func FileEater(File string) string{
+func save(p Progress) {
+	data, err := os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+	}
+	defer data.Close()
+	err = json.NewEncoder(data).Encode(&p)
+	if err != nil {
+	}
+}
+func load() Progress {
 	var progress Progress
 	data2, err := os.Open("progress.json")
-	if err != nil {}
+	if err != nil {
+	}
 	defer data2.Close()
 	err = json.NewDecoder(data2).Decode(&progress)
-       if err != nil {
-		return err.Error()
-	   }
-	err = os.Remove(File)
-	if err!= nil {
-		return err.Error()
-	}else if progress.Points >= 60 {
-	Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
-	
-	data2, err := os.Open("progress.json")
-	 if err != nil {
-		return err.Error()
-	   }
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
- if err != nil {
-		return err.Error()
-	   }
-progress.Points = progress.Points + 8
-	data, err := os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE, 0644)
-	 if err != nil {
-		return err.Error()
-	   }
-	defer data.Close()
-	err = json.NewEncoder(data).Encode(&progress)
- if err != nil {
-		return err.Error()
-	   }
-	   
-return "+8"
-	   
-}else{
-	Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
-	
-	data2, err := os.Open("progress.json")
-	 if err != nil {
-		return err.Error()
-	   }
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
- if err != nil {
-		return err.Error()
-	   }
-progress.Points += 5
-	data, err := os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE, 0644)
-	 if err != nil {
-		return err.Error()
-	   }
-	defer data.Close()
-	err = json.NewEncoder(data).Encode(&progress)
- if err != nil {
-		return err.Error()
-	   }
-	   
-return "+5"
+	if err != nil {
+	}
+	return progress
 }
 
-	
-
-
-}
-func Currpoints()int{
+func Loadcache() Progress {
 	var progress Progress
 	data2, err := os.Open("progress.json")
-	if err != nil {}
+	if err != nil {
+	}
 	defer data2.Close()
 	err = json.NewDecoder(data2).Decode(&progress)
-	if err != nil {}
+	if err != nil {
+	}
+	return progress
+}
+
+func FileEater(File string) {
+	var progress Progress = load()
+
+	_ = os.Remove(File)
+	if progress.Points >= 60 {
+		Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
+		progress.Points = progress.Points + 8
+	} else {
+		Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
+		progress.Points += 5
+	}
+	save(progress)
+
+}
+func Currpoints() int {
+	progress := load()
 	return progress.Points
 }
-func CurrFood()int{
-	var progress Progress
-	data2, err := os.Open("progress.json")
-	if err != nil {}
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
-	if err != nil {}
+func CurrFood() int {
+	progress := load()
 	return progress.Food
 }
-func CurrWater()int{
-	var progress Progress
-	data2, err := os.Open("progress.json")
-	if err != nil {}
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
-	if err != nil {}
+func CurrWater() int {
+	progress := load()
 	return progress.Water
 }
 
-func Levels()string{
-	var progress Progress
-	data2, err := os.Open("progress.json")
-	if err != nil {}
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
-	if err != nil {}
-	points := progress.Points
-	if points < 20{
-		return "Little Noro"
-	}else if points >= 20 && points < 40 {
-		// Sounds.Sound("Level.mp3")
-		return "Noro"
-	}else if points >= 40 && points < 60 {
-		// Sounds.Sound("Level.mp3")
-		return "Noro-Hero"
-	} else if points >= 60 && points < 130 {
-		// Sounds.Sound("Level.mp3")
-		return "Noronuiem"
-	}else if points > 9999 {
-		// Sounds.Sound("Level.mp3")
-		// Sounds.Sound("Level.mp3")
-		
-		return "Cheater"
-	}
+func levelsound() {
+	var progress Progress = load()
+	var points int = progress.Points
+	if points < 20 {
 
-
-	return "Unknown"
-
-}
-
-func levelsound(){
-		var progress Progress
-	data2, err := os.Open("progress.json")
-	 if err != nil {
-		// return err.Error()
-	   }
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
- if err != nil {
-		// return err.Error()
-	   }
-	   points := progress.Points
-	if points < 20{
-		
-	}else if points == 20 {
+	} else if points == 20 {
 		Sounds.Sound("Level.mp3")
 		progress.Food += 100
-		
-	
-	}else if points == 40{
+
+	} else if points == 40 {
 		Sounds.Sound("Level.mp3")
-		
+
 		progress.Water += 100
-	
+
 	} else if points == 60 {
 		Sounds.Sound("Level.mp3")
 		progress.Food += 100
-		
-	
-	}else if points == 130{
+
+	} else if points == 130 {
 		Sounds.Sound("Level.mp3")
-		
+
 		progress.Water += 100
 	} else if points > 9999 {
 		Sounds.Sound("Level.mp3")
-		Sounds.Sound("Level.mp3")
-		Sounds.Sound("Level.mp3")
-		
-		
+
 	}
+	save(progress)
 
 }
 
-	func FeedSpammer()int{
-	var progress Progress
-	data2, err := os.Open("progress.json")
-	 if err != nil {
-		// return err.Error()
-	   }
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
- if err != nil {
-		// return err.Error()
-	   }
-	   if progress.Food > 0  {
-	   progress.Food = progress.Food - 1
-	   progress.Count = progress.Count + 1
-	   
-	   if progress.Count >= 10 {
-		levelsound()
-		progress.Count = 0
-		progress.Points++
-		Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
-	   }
-	   
+func FeedSpammer() {
+	var progress Progress = load()
+	if progress.Food > 0 {
+		progress.Food = progress.Food - 1
+		progress.Count = progress.Count + 1
+		if progress.Count >= 10 {
+			levelsound()
+			progress.Count = 0
+			progress.Points++
+			Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
+		}
+		save(progress)
+	}
+}
 
-	data2, err = os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE, 0644)
-	 if err != nil {
-		// return err.Error()/
-	   }
-	defer data2.Close()
-	err = json.NewEncoder(data2).Encode(&progress)
- if err != nil {
-		// return err.Error()
-	   }
-	   
-return progress.Count
-		
-	}
-	return 0
-	}
-	
-		func DrinkSpammer()int{
-	var progress Progress
-	data2, err := os.Open("progress.json")
-	 if err != nil {
-		// return err.Error()
-	   }
-	defer data2.Close()
-	err = json.NewDecoder(data2).Decode(&progress)
- if err != nil {
-		// return err.Error()
-	   }
-	   if progress.Water > 0 {
-	   progress.Water = progress.Water - 1
-	   progress.Count = progress.Count + 1
-	   
-	   if progress.Count >= 10 {
-		levelsound()
-		progress.Count = 0
-		progress.Points++
-		Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
-	   }
-	   
+func DrinkSpammer() {
+	var progress Progress = load()
+	if progress.Water > 0 {
+		progress.Water = progress.Water - 1
+		progress.Count = progress.Count + 1
 
-	data2, err = os.OpenFile("progress.json", os.O_WRONLY|os.O_CREATE, 0644)
-	 if err != nil {
-		// return err.Error()/
-	   }
-	defer data2.Close()
-	err = json.NewEncoder(data2).Encode(&progress)
- if err != nil {
-		// return err.Error()
-	   }
-	   
-return progress.Count
-	}
-	return 0
+		if progress.Count >= 10 {
+			levelsound()
+			progress.Count = 0
+			progress.Points++
+			Sounds.Sound("roblox-eating-nom-nom-nom.mp3")
+		}
+
+		save(progress)
 
 	}
-	
+
+}
